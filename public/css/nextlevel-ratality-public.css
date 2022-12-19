@@ -1,0 +1,142 @@
+/**
+ * All of the CSS for your public-facing functionality should be
+ * included in this file.
+ */
+
+.ratality_disabled{
+    pointer-events: none;
+    cursor: not-allowed;
+    background-color: grey;
+}
+
+
+#ratalityLoader{
+    position: fixed;
+    z-index: 99999;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: all;
+    cursor: wait;
+    background-position: center center;
+    background-repeat: no-repeat;
+    opacity: 0; 
+    visibility: hidden;
+    transition: .3s all;
+
+}
+
+#ratalityLoader.SHOWING{
+    opacity: 1; 
+    visibility: visible;
+    z-index: 99999;
+}
+
+.route_one_select.inactive, .route_two_select.inactive{
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.trip_container{
+    margin-bottom: 30px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid;
+}
+
+.trip_container:last-of-type{
+    margin-bottom: 0px;
+    padding-bottom: 0px;
+    border-bottom: none;
+}
+
+.trip_container > h2{
+    margin-bottom: 10px;
+}
+
+.trip_item{
+    padding: 20px;
+    border: 1px solid;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.trip_item:last-of-type{
+    margin-bottom: 0px;
+}
+
+.trip-action-row{
+    padding-top: 20px;
+    margin-top: 20px !important;
+    border-top: 1px solid;
+}
+
+.route_select_button{
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 0 20px;
+    line-height: 40px;
+    border: 1px solid;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.selected_trip_one_item, .selected_trip_two_item{
+    box-shadow: 0px 0px 50px -6px rgba(0, 0, 0, 0.11);
+    border-color: gold;
+}
+
+#RATALITYSEARCHCONTAINER input,
+#RATALITYSEARCHCONTAINER select{
+    width: 100%;
+}
+
+.ratality_ticket_block{
+    padding: 20px;
+    border: 1px solid;
+    margin-bottom: 30px;
+    padding-bottom: 30px;
+}
+
+.ratality_ticket_block label{
+    display: block;
+}
+
+.ratality_ticket_block input,
+.ratality_ticket_block select{
+    width: 100%;
+}
+
+#ratalityTicketActionBack{float:left; }
+#ratalityTicketActionContinue{float:right;}
+#ratalityTicketActionBack,
+#ratalityTicketActionContinue{
+    display: block;
+    width: 50%;
+    text-align: center;
+    padding: 0 20px;
+    line-height: 40px;
+    border: 1px solid;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.TRIPSTOPS{ 
+    padding-top: 20px;
+    margin-top: 20px !important;
+    border-top: 1px solid;
+    display:none; 
+}
+
+.TRIP_MAP_TOGGLE{
+    position: absolute;
+    top: 0;
+    right: 0;
+    cursor: pointer;
+}
+
+.RATALITY_MAP{min-height: 600px;}
+
+.ratality_map_marker{ font-size:20px; color:#fff; background-color:#000; width:40px; line-height:40px; border-radius:120px; text-align:center; }
