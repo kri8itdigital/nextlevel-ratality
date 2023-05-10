@@ -223,6 +223,33 @@ class RATALITY{
 
 			self::PAYMENT($_ORDER_ID, $_TICKET_DATA);
 
+			if(isset($_RESPONSE['tickets']) && count($_RESPONSE['tickets']) > 0):
+
+				$_TICKETS = $_RESPONSE['tickets'];
+
+				$_THE_ORDER = wc_get_order($_ORDER_ID);
+
+				$_ITEMS = $_THE_ORDER->get_items();
+
+				if(count($_ITEMS) == count($_TICKETS)):
+
+					$_COUNTER = 0;
+
+					foreach($_ITEMS as $_ITEM):
+
+						$_NAME = $_ITEM->get_name();
+						$_NAME = explode(": ", $_NAME)[1];
+						$_NAME = $_TICKETS[$_COUNTER].': '.$_NAME;
+						$_ITEM->set_name($_NAME);
+						$_ITEM->save();
+						$_COUNTER++;
+
+					endforeach;
+
+				endif;
+
+			endif;
+
 		else:
 
 			update_post_meta($_ORDER_ID, 'ratality_error', $_RESPONSE['errors']);
@@ -233,12 +260,12 @@ class RATALITY{
 
 		/* DO WOO EMAIL NOTIFICATIONS */
         $_WOO_EMAILS = WC()->mailer()->get_emails();
-        //$_WOO_EMAILS['WC_Email_New_Order']->trigger( $_ORDER_ID );
-        //$_WOO_EMAILS['WC_Email_Customer_Completed_Order']->trigger( $_ORDER_ID );
+        $_WOO_EMAILS['WC_Email_New_Order']->trigger( $_ORDER_ID );
+        $_WOO_EMAILS['WC_Email_Customer_Completed_Order']->trigger( $_ORDER_ID );
 
         if($_FAILURE):
 
-        //	self::DOFAILUREEMAIL($_ORDER_ID, $_PARAMS, $_RESPONSE['errors']);
+        	self::DOFAILUREEMAIL($_ORDER_ID, $_PARAMS, $_RESPONSE['errors']);
 
         endif;
 		

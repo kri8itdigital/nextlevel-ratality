@@ -176,6 +176,12 @@ class Nextlevel_Ratality {
 		$this->loader->add_action('wp_ajax_ratality_ajax_create_tickets', $plugin_admin, 'ratality_ajax_create_tickets');
 		$this->loader->add_action('wp_ajax_nopriv_ratality_ajax_create_tickets', $plugin_admin, 'ratality_ajax_create_tickets');
 
+		$this->loader->add_action('wp_ajax_ratality_ajax_destroy_everything', $plugin_admin, 'ratality_ajax_destroy_everything');
+		$this->loader->add_action('wp_ajax_nopriv_ratality_ajax_destroy_everything', $plugin_admin, 'ratality_ajax_destroy_everything');
+
+		$this->loader->add_action('wp_ajax_ratality_ajax_reset_search', $plugin_admin, 'ratality_ajax_reset_search');
+		$this->loader->add_action('wp_ajax_nopriv_ratality_ajax_reset_search', $plugin_admin, 'ratality_ajax_reset_search');
+
 		$this->loader->add_action( 'woocommerce_email', $plugin_admin, 'woocommerce_email', 999, 1);
 		$this->loader->add_action( 'woocommerce_bacs_process_payment_order_status', $plugin_admin, 'woocommerce_payment_complete_order_status', 999, 3);
 		$this->loader->add_filter( 'woocommerce_payment_complete_order_status', $plugin_admin, 'woocommerce_payment_complete_order_status', 999, 1);
@@ -204,7 +210,7 @@ class Nextlevel_Ratality {
 
 		$this->loader->add_action( 'init', $plugin_public, 'shortcodes' );
 
-		$this->loader->add_filter( 'woocommerce_persistent_cart_enabled', $plugin_public, 'generic_false_function', 999 );
+		$this->loader->add_action( 'after_setup_theme', $plugin_public, 'after_setup_theme', 999 );
 
 		$this->loader->add_filter( 'woocommerce_get_item_data', $plugin_public, 'woocommerce_get_item_data', 999, 2);
 
@@ -216,6 +222,13 @@ class Nextlevel_Ratality {
 		$this->loader->add_filter( 'woocommerce_return_to_shop_text', $plugin_public, 'woocommerce_return_to_shop_text', 999, 1 );
 		$this->loader->add_filter( 'woocommerce_return_to_shop_redirect', $plugin_public, 'woocommerce_return_to_shop_redirect', 999, 1);
 
+		$this->loader->add_filter( 'woocommerce_checkout_cart_item_quantity', $plugin_public, 'generic_false_function', 999 );
+
+		$this->loader->add_filter( 'woocommerce_order_item_quantity_html', $plugin_public, 'generic_false_function', 999 );
+		
+
+		$this->loader->add_filter( 'woocommerce_locate_template', $plugin_public, 'woocommerce_locate_template', 999, 3);
+
 		$this->loader->add_filter('woocommerce_enable_order_notes_field', $plugin_public, 'generic_false_function', 999, 1);
 
 		$this->loader->add_filter('woocommerce_checkout_fields', $plugin_public, 'woocommerce_checkout_fields', 999, 1);
@@ -223,6 +236,18 @@ class Nextlevel_Ratality {
 		$this->loader->add_action( 'woocommerce_thankyou', $plugin_public, 'woocommerce_thankyou', 999, 1);
 		
 		$this->loader->add_action( 'wp_footer', $plugin_public, 'wp_footer', 999 );
+
+
+
+		$this->loader->add_action( 'woocommerce_review_order_before_submit', $plugin_public, 'woocommerce_review_order_before_submit', 999 );
+
+		$this->loader->add_action( 'woocommerce_review_order_after_submit', $plugin_public, 'woocommerce_review_order_after_submit', 999 );
+
+
+		$this->loader->add_filter( 'woocommerce_order_button_text', $plugin_public, 'woocommerce_order_button_text', 999, 1);
+
+
+		$this->loader->add_action('woocommerce_before_checkout_form', $plugin_public, 'woocommerce_before_checkout_form', 999);
 
 	}
 

@@ -3,6 +3,64 @@
  * included in this file.
  */
 
+#ratalityPaymentCancel{
+    width: var(--purchase-button-width,auto);
+    float: none;
+    color: var(--purchase-button-normal-text-color,#fff);
+    min-height: auto;
+    padding: var(--purchase-button-padding,1em 1em);
+    border-radius: var(--purchase-button-border-radius,3px);
+    font-weight:bold;
+    color: #fff !important;
+    border: 1px solid var(--e-global-color-secondary) !important;
+    background-color: var(--e-global-color-secondary) !important;
+    transition: .3s all;
+    cursor: pointer;
+    display:inline-block;
+    line-height:14px !important;
+}
+
+#ratalityPaymentCancel:hover{
+    color: var(--e-global-color-secondary) !important;
+    background-color: #fff !important;
+}
+
+#ratalityPaymentCancel:before{
+    font-family:"Font Awesome 5 Pro";
+    content:'\f01e';
+    margin-right:10px;
+}
+
+#place_order:before{
+    font-family:"Font Awesome 5 Pro";
+    content:"\f07a";
+    margin-right:10px;
+}
+
+#ratalityPaymentRow{ padding-top:10px; margin-top:10px; border-top: 1px var(--sections-border-type,solid) var(--sections-border-color,#d4d4d4); }
+
+#ratalityPaymentRow .textleft{ text-align:left; }
+#ratalityPaymentRow .textright{ text-align:right; }
+
+
+#RatalityProgress{
+      background: var(--sections-background-color,#fff);
+  border-radius: var(--sections-border-radius,3px);
+  padding: var(--sections-padding,16px 30px);
+  margin: var(--sections-margin,0 0 24px 0);
+  border: 1px var(--sections-border-type,solid) var(--sections-border-color,#d4d4d4);
+  display: block;
+    text-align:center;
+font-size:18px; text-transform:uppercase;
+}
+
+#RatalityProgress .active-step{ color:var(--e-global-color-primary) !important; font-weight:bold; }
+
+#RatalityProgress .step-icon{ margin-bottom:5px; font-size:24px; line-height:30px; }
+
+.e-checkout__column.e-checkout__column-start{ display:none; visibility:hidden; opacity:0; }
+.e-checkout__column.e-checkout__column-end{ width:100%;  }
+.elementor-widget-woocommerce-checkout-page .e-checkout__container{ display:block !important; }
 .ratality_disabled{
     pointer-events: none;
     cursor: not-allowed;

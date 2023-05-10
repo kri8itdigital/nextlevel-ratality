@@ -11,13 +11,124 @@ class RATALITY_HELPERS{
 
 
 
-	public static function OUTPUT_TRIP($_TRIP){
+	public static function IS_SEARCH_PAGE($_ID = false){
+
+		if($_ID):
+			$post = get_post($_ID);
+		else:
+			global $post;
+		endif;
+
+		if($post->post_type == 'page'):
+			$_URL = get_permalink($post);
+			$_PAGE = get_field('ratality_search_results_page', 'option');
+			if(trim($_URL) == trim($_PAGE)): return true; endif;
+		endif;
+
+		
+
+		return false;
+
+	}
+
+
+
+
+
+
+
+
+
+	public static function IS_TICKET_PAGE($_ID = false){
+
+		if($_ID):
+			$post = get_post($_ID);
+		else:
+			global $post;
+		endif;
+
+		if($post->post_type == 'page'):
+			$_URL = get_permalink($post);
+			$_PAGE = get_field('ratality_tickets_page', 'option');
+			if(trim($_URL) == trim($_PAGE)): return true; endif;
+		endif;
+
+		return false;
+	}
+
+
+
+
+
+
+
+
+
+	public static function DISPLAY_BOOKING_STEPS(){
+
+
+		if(get_field('ratality_enable_timer', 'option')):
+
+			?>
+			<div id="ratalityTimer">You have <span id="ratalityTimerText"></span> left to complete your booking.</div>
+			<?php
+
+
+		endif;
+
+		?>
+
+		<div id="RatalityProgress">
+
+			<div class="row">
+
+				<?php if(self::IS_SEARCH_PAGE()): ?>
+					<div class="col-md-3 active-step"><div class="step-icon"><i class="fas fa-search"></i></div>Search</div>
+				<?php else: ?>
+					<div class="col-md-3"><div class="step-icon"><i class="fas fa-search"></i></div>Search</div>
+				<?php endif; ?>
+
+				<?php if(self::IS_TICKET_PAGE()): ?>
+					<div class="col-md-3 active-step"><div class="step-icon"><i class="fas fa-ticket"></i></div>Details</div>
+				<?php else: ?>
+					<div class="col-md-3"><div class="step-icon"><i class="fas fa-ticket"></i></div>Details</div>
+				<?php endif; ?>
+
+				<?php if(is_checkout()): ?>
+					<div class="col-md-3 active-step"><div class="step-icon"><i class="fas fa-calendar-check"></i></div>Confirmation</div>
+				<?php else: ?>
+					<div class="col-md-3"><div class="step-icon"><i class="fas fa-calendar-check"></i></div>Confirmation</div>
+				<?php endif; ?>
+
+				<div class="col-md-3"><div class="step-icon"><i class="fas fa-shopping-cart"></i></div>Payment</div>
+			</div>
+
+		</div>
+
+		<?
+	}
+
+
+
+
+
+
+
+
+
+	public static function OUTPUT_TRIP($_TRIP, $_TYPE = 1){
 
 		$_DEPARTURE_DATE 		= explode('T', $_TRIP['departureDate']);
 		$_ARRIVAL_DATE 			= explode('T', $_TRIP['arrivalDate']);
 		$_DEPARTURE_LOCATION 	= $_TRIP['departure'];
 		$_ARRIVAL_LOCATION 		= $_TRIP['destination'];
 		$_STOPS 				= $_TRIP['stops'];
+
+		if($_TYPE == 1):
+			$_BUTTON_CLASS = 'route_one_select';
+		else:
+			$_BUTTON_CLASS = 'route_two_select';
+		endif;
 
 		?>
 
@@ -49,7 +160,7 @@ class RATALITY_HELPERS{
 								<strong>Price: </strong> <?php echo wc_price($_TRIP['price']['value']); ?>
 							</div>
 							<div class="col-4">
-								<a data-route="<?php echo $_TRIP['routeId']; ?>" data-trip="<?php echo $_TRIP['tripId']; ?>" class="route_select_button route_one_select">Select Route</a> 
+								<a data-route="<?php echo $_TRIP['routeId']; ?>" data-trip="<?php echo $_TRIP['tripId']; ?>" class="route_select_button <?php echo $_BUTTON_CLASS; ?>">Select Route</a> 
 							</div>
 						</div>
 					</div>

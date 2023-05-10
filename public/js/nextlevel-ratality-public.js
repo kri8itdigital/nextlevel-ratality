@@ -5,6 +5,22 @@
 	var mapArgs;
 
 
+	const monthARRAY = [
+	  'January',
+	  'February',
+	  'March',
+	  'April',
+	  'May',
+	  'June',
+	  'July',
+	  'August',
+	  'September',
+	  'October',
+	  'November',
+	  'December'
+	];
+
+
 
 
 	/* MAP FUNCTIONS */
@@ -123,28 +139,131 @@
 
 
 
+
+	function nl_utility_set_timer_session_storage(){
+
+		var today = new Date();
+
+		var start_date = today.getFullYear() + '-' + (today.getMonth()+1) + '-' + today.getDate();
+		var start_time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+		var start_date_time = start_date + ' ' + start_time;
+
+		window.sessionStorage.setItem("ratality_search_start", start_date_time);
+
+		now = new Date(today.getTime() + ratality_params.booking_timer_minutes*60000);
+		var end_date = now.getFullYear() + '-' + (now.getMonth()+1) + '-' + now.getDate();
+		var end_time = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
+		var end_date_time = end_date + ' ' + end_time;
+
+		if(window.sessionStorage.getItem("ratality_search_cleaned")){
+			window.sessionStorage.removeItem("ratality_search_cleaned");
+		}
+
+		window.sessionStorage.setItem("ratality_search_end", end_date_time);
+		window.sessionStorage.setItem("ratality_search_end_int", now.getTime());
+
+	}
+
+
+
+
+
+	function nl_utility_clear_timer_session_storage(){
+
+		if(window.sessionStorage.getItem("ratality_search_start")){
+			window.sessionStorage.removeItem("ratality_search_start");
+		}
+
+		if(window.sessionStorage.getItem("ratality_search_end")){
+			window.sessionStorage.removeItem("ratality_search_end");
+		}
+
+		if(window.sessionStorage.getItem("ratality_search_end_int")){
+			window.sessionStorage.removeItem("ratality_search_end_int");
+		}
+
+		window.sessionStorage.setItem("ratality_search_cleaned", 'yes');
+	}
+
+
+
+
+	function nl_utility_check_timer_session_storage(){
+
+		if(window.sessionStorage.getItem("ratality_search_end_int")){
+			
+				var rightNow = new Date();
+				var rightNow = rightNow.getTime();
+
+				if(rightNow > window.sessionStorage.getItem("ratality_search_end_int")){
+					return true;
+				}
+
+		}
+
+		if(!window.sessionStorage.getItem("ratality_search_start")){
+			return true;
+		}
+
+
+
+		return false;
+
+
+	}
+
+
+
 	$(document).ready(function(){
 
-		var $_DATE_MINIMUM = new Date();
-	   	$_DATE_MINIMUM.setDate($_DATE_MINIMUM.getDate() + parseInt(ratality_params.booking_lead_time));
-	   	var $_DATE_MINIMUM_VAL = $_DATE_MINIMUM.toISOString().substr(0, 10);
 
-	   	$('#ratalityPickUpDate').val($_DATE_MINIMUM_VAL).attr('min', $_DATE_MINIMUM_VAL).trigger('update');
+		var REGULARARGS = {
+			changeMonth: true,
+      changeYear: true,
+      firstDay: 1,
+      yearRange: "c-100:c"			
+		}
 
-	   	var $_DATE_START = new Date(); 
-	   	$_DATE_START.setDate($_DATE_MINIMUM.getDate() + parseInt(1));
-      	var $_DATE_START_VAL = $_DATE_START.toISOString().substr(0, 10);
+		$('.ratality_DOB').each(function(){ $(this).datepicker( REGULARARGS );});
 
-	   	$('#ratalityDropOffDate').val($_DATE_START_VAL).attr('min', $_DATE_START_VAL).trigger('update');
 
-	   	$('#ratalityPickUpDate').on('change', function(){
-	   		if($(this).val() != ''){
-         		var $_DATE_START = new Date($(this).val()); 
-         		$_DATE_START.setDate($_DATE_START.getDate() + parseInt(1));
-         		var $_DATE_START_VAL = $_DATE_START.toISOString().substr(0, 10);
-         		$('#ratalityDropOffDate').val($_DATE_START_VAL).attr('min', $_DATE_START_VAL).trigger('update');
-         	}
-	   	});
+		var DROPOFFARGS = {
+            minDate: parseInt(ratality_params.booking_lead_time) + parseInt(1),
+            startDate: parseInt(ratality_params.booking_lead_time) + parseInt(1),
+            dateFormat: 'dd MM yy',
+            changeMonth: true,
+            changeYear: true,
+            firstDay: 1
+        };
+
+      $('#ratalityDropOffDate').datepicker( DROPOFFARGS );
+
+
+		var PICKUPARGS = {
+          minDate: parseInt(ratality_params.booking_lead_time),
+          dateFormat: 'dd MM yy',
+          changeMonth: true,
+          changeYear: true,
+          firstDay: 1,
+          onSelect: function(date){
+            $_DATE_START = new Date(date); 
+            $_DATE_START.setDate($_DATE_START.getDate() + parseInt(1));
+            $_DATE_START_VAL = $_DATE_START.getDate() + ' ' + monthARRAY[$_DATE_START.getMonth()] + ' ' + $_DATE_START.getFullYear();
+            $('#ratalityDropOffDate').datepicker( "option", "minDate", $_DATE_START );
+            $('#ratalityDropOffDate').val($_DATE_START_VAL).trigger('change'); 
+                 
+          }
+        };
+
+      $('#ratalityPickUpDate').datepicker( PICKUPARGS );
+
+      $('#ratalityPickUpDate').datepicker('setDate', parseInt(ratality_params.booking_lead_time));
+      $('#ratalityDropOffDate').datepicker('setDate', parseInt(ratality_params.booking_lead_time) + parseInt(1));
+
+	   	$('#ratalityPickUpLocation').select2({dropdownParent: $('#RATALITYSEARCHCONTAINER') });
+      $('#ratalityDropOffLocation').select2({dropdownParent: $('#RATALITYSEARCHCONTAINER') });
+      $('#ratalityTickets').select2({dropdownParent: $('#RATALITYSEARCHCONTAINER') , minimumResultsForSearch: -1});
+      $('#ratalityReturn').select2({dropdownParent: $('#RATALITYSEARCHCONTAINER') , minimumResultsForSearch: -1});
 
 	   	$('#ratalityReturn').on('change', function(){
 
@@ -155,6 +274,14 @@
 	   		}
 
 	   	});
+
+
+	   	/* SET TIMER IF A SEARCH HAS HAPPENED */
+      if(ratality_params.enable_timer == 'yes'){
+      	$_TIMER = setInterval(ratalityOrderTimeout, 1000);
+      }
+
+
 
 	  	$('#RATALITYSEARCHACTION').on('click', function(){
 
@@ -208,6 +335,11 @@
 		            jQuery('#ratalityLoader').addClass('SHOWING');
 		         },
 		         success: function (url) {
+
+		         	  if(ratality_params.enable_timer == 'yes'){
+		         	  	nl_utility_set_timer_session_storage();
+		         		}
+
 		            window.location.href = url;
 		         }
 		      });
@@ -242,10 +374,12 @@
 		        success: function (response) {
 		        	//console.log(response);
 		        	$('.route_one_select').each(function(){ $(this).addClass('inactive')});
-		            $('#ratalityLoader').removeClass('SHOWING');
+		            
 
 		            if(response != 'busy'){
 		            	window.location.href = response;
+		            }else{
+		            	$('#ratalityLoader').removeClass('SHOWING');
 		            }
 		        }
 		    });
@@ -276,10 +410,11 @@
 		        success: function (response) {
 		        	//console.log(response);
 		        	$('.route_two_select').each(function(){ $(this).addClass('inactive')});
-		            $('#ratalityLoader').removeClass('SHOWING');
-
+		            
 		            if(response != 'busy'){
 		            	window.location.href = response;
+		            }else{
+		            	$('#ratalityLoader').removeClass('SHOWING');
 		            }
 		        }
 		    });
@@ -303,7 +438,6 @@
 		            $('#ratalityLoader').addClass('SHOWING');
 		        },
 		        success: function (response) {
-		            $('#ratalityLoader').removeClass('SHOWING');
 		            window.location.href=response;
 		        }
 		    });
@@ -352,7 +486,6 @@
 			            $('#ratalityLoader').addClass('SHOWING');
 			        },
 			        success: function (response) {
-			            $('#ratalityLoader').removeClass('SHOWING');
 			            window.location.href=response;
 			        }
 			    });
@@ -402,6 +535,136 @@
 	  	});
 
 
+
+
+	  	jQuery('#ratalityPaymentCancel').on('click', function(){
+
+	  		var ajax_data = {
+        	action: 'ratality_ajax_destroy_everything'
+      	};
+
+      	jQuery.ajax({
+			        url: ratality_params.ajax_url,
+			        type:'POST',
+			        data: ajax_data,
+			        beforeSend:function(){
+			            $('#ratalityLoader').addClass('SHOWING');
+			        },
+			        success: function (response) {
+			            window.location.href=response;
+			        }
+			    });
+
+	  	});
+
+
 	});
+
+
+
+	
+
+	/* ORDER TIMEOUT */
+  function ratalityOrderTimeout(){
+
+    if(jQuery('body').hasClass('woocommerce-order-received') || nl_utility_check_timer_session_storage()){
+
+      clearInterval($_TIMER);
+
+      jQuery('#ratalityTimerText').html('');
+      jQuery('#topBarTimer').html('');
+      jQuery('#ratalityTimer').removeClass('showing');
+
+      var ajax_data = {
+        action: 'ratality_ajax_reset_search',
+        object_id: ratality_params.utility_queried_object_id
+      };
+
+      jQuery.ajax({
+        url: ratality_params.ajax_url,
+        type:'POST',
+        data: ajax_data,
+        beforeSend:function(){
+
+			            
+			  },
+        success:function(response){
+
+        	nl_utility_clear_timer_session_storage();
+
+        	if(response != 'donothing'){
+        		jQuery('#ratalityTimer').addClass('showing');
+        		setTimeout(function(){ window.location.href = response; }, 1000);
+        		
+        	}
+
+        }
+      });
+
+    }else{
+    		if(window.sessionStorage.getItem('ratality_search_end')){
+        $_END = new Date(window.sessionStorage.getItem('ratality_search_end').replace(/-/g, '/'));
+        $_NOW = new Date();
+        var $_LEFT = $_END - $_NOW;
+
+        var days = Math.floor($_LEFT / (1000 * 60 * 60 * 24));
+        var hours = Math.floor(($_LEFT % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor(($_LEFT % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor(($_LEFT % (1000 * 60)) / 1000);
+
+        var orig_minute = minutes;
+        var orig_seconds = seconds;
+
+        if(minutes < 10){ minutes = '0'+minutes; }
+        if(seconds < 10){ seconds = '0'+seconds; }
+
+        $_TIMETEXT = minutes+':'+seconds;
+
+        jQuery('#ratalityTimerText').html($_TIMETEXT);
+        jQuery('#topBarTimer').html($_TIMETEXT);
+        jQuery('#ratalityTimer').addClass('showing');
+
+
+        if((orig_minute < 0 && orig_seconds < 0) || (parseInt(orig_minute) <= 0 && parseInt(orig_seconds) <= 0) ){
+
+          clearInterval($_TIMER);
+          jQuery('#ratalityTimer').removeClass('showing');
+
+          var ajax_data = {
+            action: 'ratality_ajax_reset_search',
+          };
+
+           jQuery.ajax({
+              url: ratality_params.ajax_url,
+              type:'POST',
+              data: ajax_data
+          });
+
+          jQuery.confirm({
+              title: ratality_params.booking_session_title,
+              content: ratality_params.booking_session_text,
+              theme: 'black',
+              buttons: {
+                  ok: {
+                      text: ratality_params.booking_session_button,
+                      action: function(){
+
+                      	nl_utility_clear_timer_session_storage();
+                        window.location.href = ratality_params.booking_session_link;
+
+                      }
+                  }
+              },
+              autoClose: 'ok|'+ratality_params.booking_session_time,
+          });
+
+      	}
+
+      }
+     }
+}
+
+
+
 
 })( jQuery );
