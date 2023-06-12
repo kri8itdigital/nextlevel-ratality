@@ -449,6 +449,10 @@
 
 	  	$('#ratalityTicketActionContinue').on('click', function(){
 
+	  		$('.ratality_error').each(function(){
+	  			$(this).removeClass('ratality_error');
+	  		});
+
 	  		var $_VALID = true;
 
 	  	
@@ -458,6 +462,7 @@
 
 	  				if(!$(this).val() || $(this).val() == ''){
 	  					$_VALID = false;
+	  					$(this).addClass('ratality_error');
 	  				}
 
 	  			});
@@ -466,6 +471,7 @@
 
 	  				if(!$(this).val() || $(this).val() == ''){
 	  					$_VALID = false;
+	  					$(this).addClass('ratality_error');
 	  				}
 
 	  			});

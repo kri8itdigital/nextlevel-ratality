@@ -356,6 +356,8 @@ class Nextlevel_Ratality_Public {
 
 				ob_start();
 
+				echo '<div id="RatalityTrips">';
+
 				RATALITY_HELPERS::DISPLAY_BOOKING_STEPS();
 
 				$_TRIPS = WC()->session->get('ratality_trips');
@@ -390,6 +392,8 @@ class Nextlevel_Ratality_Public {
 
 				endif;
 				
+
+				echo '</div>';
 
 				return ob_get_clean();
 
